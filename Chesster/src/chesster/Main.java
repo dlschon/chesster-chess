@@ -32,9 +32,11 @@ public class Main
 		
 	};
 	
-	public static int side = -1;
+	public static int side = 1;
 	public static byte[][] currentBoard = new byte[8][8];
 	public static Engine engine;
+	
+	public static int moves = 0;
 	
 	//===========================================
 	//METHODS
@@ -45,7 +47,6 @@ public class Main
 	 */
 	public static void main(String[] args)
 	{
-		
 		startNewGame();
 		
 		Util.print("======\\CHESSTER/======");
@@ -153,30 +154,31 @@ public class Main
 	{
 		setStartPos();
 		int count = 0;
-    if (params.length == 2)
-    {
-        setStartPos();
-        side = 1;
-    }
-    else
-    {
-        for (String str : params)
-        {
-            if (str.length() == 4 || str.length() == 5 && !str.equals("moves"))
-            {
-              count++;
-              doMove(str);
-            }
-        }
-        if (!Util.isEven(count))
-        {
-           side = -1;
-        }
-        else
-        {
-           side = 1;
-        }
-    }
+		moves = params.length - 3;
+		if (params.length == 2)
+		{
+			setStartPos();
+			side = 1;
+		}
+		else
+		{
+			for (String str : params)
+			{
+				if (str.length() == 4 || str.length() == 5 && !str.equals("moves"))
+				{
+					count++;
+					doMove(str);
+				}
+			}
+			if (!Util.isEven(count))
+			{
+				side = -1;
+			}
+			else
+			{
+				side = 1;
+			}
+		}
 	}
 
 	/**
@@ -231,6 +233,7 @@ public class Main
 			for (int x = 0; x < 8; x++)
 			{
 				currentBoard[y][x] = STARTBOARD[y][x];
+				moves = 0;
 			}
 		}
 	}
