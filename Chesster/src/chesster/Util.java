@@ -159,6 +159,10 @@ public class Util {
 		return false;
 	}
 	
+	/**
+	 * Prints a visual representation of a board
+	 * @param board
+	 */
 	public static void printout(byte[][] b)
 	{
 		print("x_12345678");
@@ -190,6 +194,11 @@ public class Util {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param double
+	 * @return
+	 */
 	public static boolean isEven(double d)
 	{
 		d /= 2;
@@ -202,5 +211,19 @@ public class Util {
 		{
 			return false;
 		}
+	}
+	
+	/**
+	 * returns -1 for negative, 0 for zero, and 1 for positive
+	 * @param int
+	 * @return
+	 */
+	public static int getSign(int i)
+	{
+		if (i < 0)
+			return -1;
+		if (i > 0)
+			return 1;
+		return 0;
 	}
 }

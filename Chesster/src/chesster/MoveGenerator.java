@@ -12,22 +12,23 @@ public class MoveGenerator
 	//FIELDS
 	//===========================================
 	
-	public /*static*/ byte[][] board;
+	public byte[][] board;
 	/** source x: the origin of the move (rank)*/
-	public /*static*/ byte sX;
+	public byte sX;
 	/** source y: the origin of the move (file)*/
-	public /*static*/ byte sY;
+	public byte sY;
 	/** test x: the destination of the move (rank)*/
-	public /*static*/ byte tX;
+	public byte tX;
 	/** test y: the destination of the move (file)*/
-	public /*static*/ byte tY;
+	public byte tY;
 	/** piece: the type of piece being tested */
-	public /*static*/ byte piece;
+	public byte piece;
 	/** side: -1 for black, 1 for white */
-	public /*static*/ int side;
-	/** Marks whether this is a counter-gen, used to test for check*/
+	public int side;
+	/** Marks whether this is a counter-generation, used to test for check*/
 	public boolean cFlag;
-	public /*static*/ ArrayList<byte[]> moves;
+	
+	public ArrayList<byte[]> moves;
 	
 	//===========================================
 	//Constructor

@@ -31,18 +31,18 @@ public class Search
 		
 		for (byte[] move: bestMoves)
 		{
-			if (!MoveGenerator.causesCheck(board, move, side))
-			{
+			/*if (!MoveGenerator.causesCheck(board, move, side))
+			{*/
 				bestMove = move;
 				break;
-			}
+			//}
 		}
 		
 		return new SearchInfo(nodes, end-start, Util.arrToAlg(bestMove));
 		
 	}
 	
-	public ArrayList<byte[]> searchRoot(double alpha, double beta, int depth, byte[][] b, int s)
+	public ArrayList<byte[]> searchRoot(int alpha, int beta, int depth, byte[][] b, int s)
 	{
 		nodes++;
 		MoveGenerator mGen = new MoveGenerator(b, s, false);
@@ -51,12 +51,12 @@ public class Search
 		/*Contains a list of possible moves */
 		ArrayList<byte[]> bestMoves = new ArrayList<byte[]>();
 		/*Contains the value of each move. Used to sort moves from best to worst*/
-		ArrayList<Double> moveVals = new ArrayList<Double>();
+		ArrayList<Integer> moveVals = new ArrayList<Integer>();
 		
 		for (byte[] m : moveset)
 		{
 			byte[][] nBoard = Util.doMove(b, m);
-			double score = -alphaBeta(-beta, -alpha, depth-1, nBoard, -s);
+			int score = -alphaBeta(-beta, -alpha, depth-1, nBoard, -s);
 			bestMoves.add(m);
 			moveVals.add(score);
 		}
@@ -72,19 +72,21 @@ public class Search
 	 * @param moveVals
 	 * @return
 	 */
-	public ArrayList<byte[]> sortMoves(ArrayList<byte[]> bestMoves, ArrayList<Double> moveVals) 
+	public ArrayList<byte[]> sortMoves(ArrayList<byte[]> bestMoves, ArrayList<Integer> moveVals) 
 	{
 		ArrayList<byte[]> rArrayList = new ArrayList<byte[]>();
 		ArrayList<Integer> indexOrder = new ArrayList<Integer>();
 		//copy of moveVals to prevent modification
-		ArrayList<Double> cMoveVals = (ArrayList<Double>) moveVals.clone();
+						@SuppressWarnings("unchecked")
+		ArrayList<Integer> cMoveVals = (ArrayList<Integer>) moveVals.clone();
 		//Sort values in descending order
-		Collections.sort(cMoveVals, new DoubleComparator());
+		Collections.sort(cMoveVals, new IntComparator());
+		Util.print("info score " + cMoveVals.get(0));
 		
-		for (double val : moveVals)
+		for (int val : moveVals)
 		{
 			int index = cMoveVals.indexOf(val);
-			cMoveVals.set(index, -99999d);
+			cMoveVals.set(index, -99999);
 			indexOrder.add(index);
 			rArrayList.add(null);
 		}
@@ -97,7 +99,7 @@ public class Search
 		return rArrayList;
 	}
 
-	public double alphaBeta(double alpha, double beta, int depth, byte[][] b, int s)
+	public int alphaBeta(int alpha, int beta, int depth, byte[][] b, int s)
 	{
 		nodes++;
 		if (depth == 0)
@@ -112,7 +114,7 @@ public class Search
 			{
 				byte[][] nBoard = Util.doMove(b, m);
 				
-				double score = -alphaBeta(-beta, -alpha, depth-1, nBoard, -s);
+				int score = -alphaBeta(-beta, -alpha, depth-1, nBoard, -s);
 				if (score >= beta)
 				{
 					return beta;	//cutoff
