@@ -31,11 +31,11 @@ public class Search
 		
 		for (byte[] move: bestMoves)
 		{
-			/*if (!MoveGenerator.causesCheck(board, move, side))
-			{*/
+			if (!MoveGenerator.causesCheck(board, move, side))
+			{
 				bestMove = move;
 				break;
-			//}
+			}
 		}
 		
 		return new SearchInfo(nodes, end-start, Util.arrToAlg(bestMove));
@@ -81,7 +81,6 @@ public class Search
 		ArrayList<Integer> cMoveVals = (ArrayList<Integer>) moveVals.clone();
 		//Sort values in descending order
 		Collections.sort(cMoveVals, new IntComparator());
-		Util.print("info score " + cMoveVals.get(0));
 		
 		for (int val : moveVals)
 		{
