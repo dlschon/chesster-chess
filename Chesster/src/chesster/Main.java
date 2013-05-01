@@ -14,7 +14,7 @@ public class Main
 	//FIELDS
 	//===========================================
 	
-	public static final int REVISION_NO = 23;
+	public static final int REVISION_NO = 5;
 	
 	public static final byte[][] STARTBOARD = 
 	{
@@ -35,7 +35,7 @@ public class Main
 	public static int side = 1;
 	public static byte[][] currentBoard = new byte[8][8];
 	public static Engine engine;
-	
+	public static ArrayList<byte[]> moveHistory;
 	public static int moves = 0;
 	
 	//===========================================
@@ -121,7 +121,7 @@ public class Main
 				}
 				
 				if (params[1].equals("startpos"))
-        {
+				{
 						parsePos(params);
 				}
 				else
@@ -129,6 +129,7 @@ public class Main
 					setFenPos();
 				}
 			}
+			
 			
 			//think and output 
 			if (cmd.equals("go"))
@@ -188,6 +189,7 @@ public class Main
 	public static void doMove(String move) 
 	{
 		byte[] m = Util.algToArr(move);
+		moveHistory.add(m);
 		currentBoard = Util.doMove(currentBoard, m);
 	}
 	
