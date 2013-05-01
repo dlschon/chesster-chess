@@ -48,7 +48,7 @@ public class Main
 	public static void main(String[] args)
 	{
 		startNewGame();
-		
+		moveHistory = new ArrayList<byte[]>();
 		Util.print("======\\CHESSTER/======");
 		Util.print("=======\\-r" + REVISION_NO + "--/=======");
 		Util.print("By Daniel Levi Schon I");
