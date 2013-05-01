@@ -22,6 +22,7 @@ public class Evaluation
 	
 	public static final int MIDGAME_START = 13;		//at this moves, phase shifts from opening to midgame
 	
+	/*Importance of certain factors relative to game phase*/
 	public static final double[/*phase*/][/*weight*/] WEIGHTS = 
 		{	
 			//Opening phase
@@ -42,13 +43,16 @@ public class Evaluation
 			},
 		};
 	
+	/* Indices for the weights table */
 	public static final int WEIGHT_MAT = 0;
 	public static final int WEIGHT_MOB = 1;
 	public static final int WEIGHT_OCC = 2;
 	public static final int WEIGHT_CON = 3;
 	public static final int WEIGHT_REP = 4;
 	
-	public static final int REP_PENALTY = 200;
+	/* Penalties*/
+	public static final int PENALTY_REP = 200;		//penalty for repeated movement 
+	public static final int PENALTY_QUEEN= 100;		//penalty for early queen use (only for opening)
 	
 	public static byte[][] board;
 	public static int side; 
@@ -64,17 +68,21 @@ public class Evaluation
 	 * @param side
 	 * @return score
 	 */
-	public static int evaluate(byte[][] b, int s)
+	public static int evaluate(byte[][] board, int side, byte[] rootMove, byte rootPiece)
 	{
-		board = b;
-		side = s;
 		
 		phase = 0;
 		if (Main.moves >= MIDGAME_START)
 			phase = 1;
 		int score = 0;
-
-		//Evaluate material value
+		
+		byte absRootPiece = (byte) Math.abs(rootPiece);
+		
+		/*Apply the early queen use penalty, if applies*/
+		if (absRootPiece == 5 && phase == 0)
+			score -= PENALTY_QUEEN;
+			
+		/*Evaluate material value*/
 		for(byte y = 0; y < 8; y++)
 		{
 			for(byte x = 0; x < 8; x++)
@@ -94,10 +102,10 @@ public class Evaluation
 		byte[][] ownMoves = mGenOwn.generate();
 		byte[][] opponentMoves = mGenOpponent.generate();
 		
-		//Evaluate mobility
+		/*Evaluate mobility*/
 		score += WEIGHTS[phase][WEIGHT_MOB]*(ownMoves.length-opponentMoves.length);
 
-		//Evaluate center occupation
+		/*Evaluate center occupation*/
 		for (byte posY = 1; posY <= 7; posY++)
 		{
 			for (byte posX = 2; posX <= 4; posX++)
@@ -107,7 +115,7 @@ public class Evaluation
 			}
 		}
 
-		//Evaluate center control (attacking)
+		/*Evaluate center control (attacking)*/
 		for (byte[] move : ownMoves)
 		{
 			byte posY = move[2];
@@ -123,7 +131,14 @@ public class Evaluation
 			score -= WEIGHTS[phase][WEIGHT_CON]*val;
 		}
 		
-		//Add repetition penalty if applies
+		/*Add repetition penalty if applies*/
+		if (Main.pieceHistory.size() > 1)
+		{
+			byte lastPiece = Main.pieceHistory.get(Main.pieceHistory.size() - 2);
+			assert (Util.getSign(rootPiece) == Util.getSign(lastPiece));
+			if (rootPiece == lastPiece)
+				score -= PENALTY_REP * WEIGHTS[phase][WEIGHT_REP];
+		}
 		return score;
 	}
 }

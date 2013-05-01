@@ -36,6 +36,7 @@ public class Main
 	public static byte[][] currentBoard = new byte[8][8];
 	public static Engine engine;
 	public static ArrayList<byte[]> moveHistory;
+	public static ArrayList<Byte> pieceHistory;
 	public static int moves = 0;
 	
 	//===========================================
@@ -49,6 +50,9 @@ public class Main
 	{
 		startNewGame();
 		moveHistory = new ArrayList<byte[]>();
+		moveHistory.add(new byte[] {0,0,0,0});
+		pieceHistory = new ArrayList<Byte>();
+		pieceHistory.add((byte) 0);
 		Util.print("======\\CHESSTER/======");
 		Util.print("=======\\-r" + REVISION_NO + "--/=======");
 		Util.print("By Daniel Levi Schon I");
@@ -189,7 +193,16 @@ public class Main
 	public static void doMove(String move) 
 	{
 		byte[] m = Util.algToArr(move);
-		moveHistory.add(m);
+		if (moveHistory.size() == 0)
+		{
+			moveHistory.set(0, m);
+			pieceHistory.set(0, (byte) 0);
+		}
+		else
+		{
+			moveHistory.add(m);
+			pieceHistory.add((byte) 0);
+		}
 		currentBoard = Util.doMove(currentBoard, m);
 	}
 	
