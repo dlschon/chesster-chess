@@ -7,14 +7,16 @@ import java.util.Collections;
 public class Search 
 {
 	
-	public static final int SEARCH_DEPTH = 4;
+	public static final int SEARCH_DEPTH = 5;
 	
 	public byte[][] board;
-	public double bestScore = -200;
 	public int side;
 	public byte[] bestMove = {0,0,0,0};
 	public Engine engine;
 	public long nodes = 0;
+	
+	public static double bestScore = -20000;
+	public static int cuts = 0;
 	
 	public Search(byte[][] b, int s, Engine engine)
 	{
@@ -29,6 +31,8 @@ public class Search
 	 */
 	public SearchInfo search()
 	{
+		bestScore = -20000;
+		cuts = 0;
 		long start = System.currentTimeMillis();
 		ArrayList<byte[]> bestMoves = searchRoot(SEARCH_DEPTH, board, side);
 		long end = System.currentTimeMillis();
