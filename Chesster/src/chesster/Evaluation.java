@@ -12,15 +12,15 @@ public class Evaluation
 	
 	public static final int[] PIECE_VALUES = 
 	{
-		90,			//Pawn
+		99,			//Pawn
 		500,		//Rook
 		300,		//Knight
-		310,		//Bishop
+		301,		//Bishop
 		900,		//Queen
 		20000		//King
 	};
 	
-	public static final int MIDGAME_START = 13;		//at this moves, phase shifts from opening to midgame
+	public static final int MIDGAME_START = 8;		//at this moves, phase shifts from opening to midgame
 	
 	/*Importance of certain factors relative to game phase*/
 	public static final double[/*phase*/][/*weight*/] WEIGHTS = 
@@ -53,6 +53,10 @@ public class Evaluation
 	/* Penalties*/
 	public static final int PENALTY_REP = 200;		//penalty for repeated movement 
 	public static final int PENALTY_QUEEN= 100;		//penalty for early queen use (only for opening)
+	
+	
+	/* Miscellaneous */
+	public static final int CUTOFF_DEFICIT = 299;	//Material difference from best score, used to cut off eval early
 	
 	public static byte[][] board;
 	public static int side; 
@@ -97,6 +101,19 @@ public class Evaluation
 			}
 		}
 
+		/* if material value is CUTOFF_DEFICIT points from best score, stop evaluation */
+		if ((Search.bestScore - score) > CUTOFF_DEFICIT)
+		{
+			Search.cuts++;
+			/*if (Search.cuts % 5000 == 0)
+				Util.print("cutoff: deficit #" + Search.cuts);*/
+			return score;
+		}
+		
+		if (score > Search.bestScore)
+			Search.bestScore = score;
+		
+		/* generate move sets */
 		MoveGenerator mGenOwn = new MoveGenerator(board, side, false);
 		MoveGenerator mGenOpponent = new MoveGenerator(board, -side, false);
 		byte[][] ownMoves = mGenOwn.generate();
@@ -105,7 +122,7 @@ public class Evaluation
 		/*Evaluate mobility*/
 		score += WEIGHTS[phase][WEIGHT_MOB]*(ownMoves.length-opponentMoves.length);
 
-		/*Evaluate center occupation*/
+		/*Evaluate center occupation (position)*/
 		for (byte posY = 1; posY <= 7; posY++)
 		{
 			for (byte posX = 2; posX <= 4; posX++)
@@ -139,6 +156,7 @@ public class Evaluation
 			if (rootPiece == lastPiece)
 				score -= PENALTY_REP * WEIGHTS[phase][WEIGHT_REP];
 		}
+		
 		return score;
 	}
 }
