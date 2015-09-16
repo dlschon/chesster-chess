@@ -1,0 +1,1 @@
+Chesster is a chess bot designed to crush it's weak-minded human underlings.
